@@ -1,5 +1,7 @@
 package net.masa3mc.altcheck;
 
+import static org.bukkit.ChatColor.*;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -43,7 +45,7 @@ public class Listeners implements Listener {
     if (!conf.getStringList("IgnoreUUID").contains("" + p.getUniqueId())) {
       if (yml.getStringList(ip).size() > conf.getInt("maxAlt")) {
         p.kickPlayer(conf.getString("kickMessage"));
-        event.setKickMessage(u.color(conf.getString("kickMessage")));
+        event.setKickMessage(translateAlternateColorCodes('&', conf.getString("kickMessage")));
         event.setResult(Result.KICK_OTHER);
       }
 
@@ -61,8 +63,8 @@ public class Listeners implements Listener {
         if (ip_.equals("127.0.0.1") || ip_.startsWith("192.168.") || ip_.startsWith("10.") || ip_.startsWith("172.31.")) {
           for (Player players : Bukkit.getOnlinePlayers()) {
             if (players.hasPermission("AltCheck.admin")) {
-              players
-                  .sendMessage(AltCheck.prefix + u.color("&7" + p.getName() + " (LocalNetwork) has " + yml.getStringList(ip).size() + " accounts."));
+              players.sendMessage(AltCheck.ALTCHECK_PREFIX
+                  + translateAlternateColorCodes('&', "&7" + p.getName() + " (LocalNetwork) has " + yml.getStringList(ip).size() + " accounts."));
             }
           }
         } else {
@@ -71,14 +73,15 @@ public class Listeners implements Listener {
             String country = json.country_name;
             for (Player players : Bukkit.getOnlinePlayers()) {
               if (players.hasPermission("AltCheck.admin")) {
-                players.sendMessage(
-                    AltCheck.prefix + u.color("&7" + p.getName() + " (" + country + ") has " + yml.getStringList(ip).size() + " accounts."));
+                players.sendMessage(AltCheck.ALTCHECK_PREFIX + translateAlternateColorCodes('&',
+                    "&7" + p.getName() + " (" + country + ") has " + yml.getStringList(ip).size() + " accounts."));
               }
             }
           } else {
             for (Player players : Bukkit.getOnlinePlayers()) {
               if (players.hasPermission("AltCheck.admin")) {
-                players.sendMessage(AltCheck.prefix + u.color("&7" + p.getName() + " (Unknow) has " + yml.getStringList(ip).size() + " accounts."));
+                players.sendMessage(AltCheck.ALTCHECK_PREFIX
+                    + translateAlternateColorCodes('&', "&7" + p.getName() + " (Unknow) has " + yml.getStringList(ip).size() + " accounts."));
               }
 
             }
