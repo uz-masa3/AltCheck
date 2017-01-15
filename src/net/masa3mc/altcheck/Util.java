@@ -20,13 +20,14 @@ import com.google.gson.Gson;
 
 public final class Util {
 
-  AltCheck ins = AltCheck.instance;
+  private static AltCheck ins = AltCheck.instance;
 
-  public String color(String str) {
+  @Deprecated
+  public static String color(String str) {
     return ChatColor.translateAlternateColorCodes('&', str);
   }
 
-  public String getVersion() {
+  public static String getVersion() {
     return ins.getDescription().getVersion();
   }
 
