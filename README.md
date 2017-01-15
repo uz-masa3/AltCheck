@@ -1,6 +1,6 @@
 # AltCheck<br>
 
-This plugin can check alt account. But need target already logged to datafile.
+This plugin can check alt account. But need target already logged to local datafile.
 
 <b>Support Version (AltCheck 1.4.5 ~ )</b>
 <ul>
