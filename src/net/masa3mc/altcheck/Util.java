@@ -82,7 +82,7 @@ public final class Util {
     return new File(path);
   }
 
-  public String convertUUIDtoName(String uuid) { // UUID to Name
+  public String utn(String uuid) { // UUID to Name
     if (!uuid.equals("") && uuid.length() == 32) {
       try {
         URL url = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid);
