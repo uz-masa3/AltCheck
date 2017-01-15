@@ -20,99 +20,99 @@ import com.google.gson.Gson;
 
 public class Util {
 
-	AltCheck ins = AltCheck.instance;
+  AltCheck ins = AltCheck.instance;
 
-	public String color(String str) {
-		return ChatColor.translateAlternateColorCodes('&', str);
-	}
+  public String color(String str) {
+    return ChatColor.translateAlternateColorCodes('&', str);
+  }
 
-	public String getVersion() {
-		return ins.getDescription().getVersion();
-	}
+  public String getVersion() {
+    return ins.getDescription().getVersion();
+  }
 
-	public List<String> check(String IP) {
-		YamlConfiguration yml = getDataYml();
-		if (yml.getString(IP) != null) {
-			ArrayList<String> arraylist = new ArrayList<String>();
-			for (String list : yml.getStringList(IP)) {
-				arraylist.add(list);
-			}
-			return arraylist;
-		} else {
-			return null;
-		}
-	}
+  public List<String> check(String IP) {
+    YamlConfiguration yml = getDataYml();
+    if (yml.getString(IP) != null) {
+      ArrayList<String> arraylist = new ArrayList<String>();
+      for (String list : yml.getStringList(IP)) {
+        arraylist.add(list);
+      }
+      return arraylist;
+    } else {
+      return null;
+    }
+  }
 
-	public String getPlayerIP(Player player) {
-		if (player == null) {
-			return null;
-		} else {
-			String[] address = player.getAddress().toString().split("/");
-			String[] ip = address[1].split(":");
-			return ip[0];
-		}
-	}
+  public String getPlayerIP(Player player) {
+    if (player == null) {
+      return null;
+    } else {
+      String[] address = player.getAddress().toString().split("/");
+      String[] ip = address[1].split(":");
+      return ip[0];
+    }
+  }
 
-	public void checkLog(String sender, String ip) {
-		ins.getLogger().info(sender + " checked " + ip + "!");
-	}
+  public void checkLog(String sender, String ip) {
+    ins.getLogger().info(sender + " checked " + ip + "!");
+  }
 
-	public YamlConfiguration getDataYml() {
-		FileConfiguration conf = ins.getConfig();
-		String path = conf.getString("yml").replace("%altcheck%", ins.getDataFolder().getAbsolutePath());
-		return YamlConfiguration.loadConfiguration(new File(path));
-	}
+  public YamlConfiguration getDataYml() {
+    FileConfiguration conf = ins.getConfig();
+    String path = conf.getString("yml").replace("%altcheck%", ins.getDataFolder().getAbsolutePath());
+    return YamlConfiguration.loadConfiguration(new File(path));
+  }
 
-	public File getDataFile() {
-		FileConfiguration conf = ins.getConfig();
-		String path = conf.getString("yml").replace("%altcheck%", ins.getDataFolder().getAbsolutePath());
-		return new File(path);
-	}
+  public File getDataFile() {
+    FileConfiguration conf = ins.getConfig();
+    String path = conf.getString("yml").replace("%altcheck%", ins.getDataFolder().getAbsolutePath());
+    return new File(path);
+  }
 
-	@SuppressWarnings("resource")
-	public String utn(String uuid) {	//UUID to Name
-		if(uuid != "" && uuid.length() == 32){
-			try {
-				URL url = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid);
-				HttpsURLConnection http = (HttpsURLConnection) url.openConnection();
-				http.setRequestMethod("GET");
-				http.setRequestProperty("User-Agent", "AltCheck");
-				if (http.getResponseCode() == HttpsURLConnection.HTTP_OK) {
-					BufferedReader reader = new BufferedReader(new InputStreamReader(http.getInputStream(), "UTF-8"));
-					UUIDJson json = new Gson().fromJson(reader.readLine(), UUIDJson.class);
-					return json.name;
-				} else {
-					return null;
-				}
-			} catch (IOException ex) {
-				return null;
-			}
-		}else{
-			return null;
-		}
-	}
-	
-	@SuppressWarnings("resource")
-	public CountryJson getCountry(Player player){
-		if(player!=null){
-			try {
-				URL url = new URL("http://freegeoip.net/json/"+getPlayerIP(player));
-				HttpURLConnection http = (HttpURLConnection) url.openConnection();
-				http.setRequestMethod("GET");
-				http.setRequestProperty("User-Agent", "AltCheck");
-				if (http.getResponseCode() == HttpsURLConnection.HTTP_OK) {
-					BufferedReader reader = new BufferedReader(new InputStreamReader(http.getInputStream(), "UTF-8"));
-					CountryJson json = new Gson().fromJson(reader.readLine(), CountryJson.class);
-					return json;
-				} else {
-					return null;
-				}
-			} catch (IOException ex) {
-				return null;
-			}
-		}else{
-			return null;
-		}
-	}
-	
+  @SuppressWarnings("resource")
+  public String utn(String uuid) {	// UUID to Name
+    if (uuid != "" && uuid.length() == 32) {
+      try {
+        URL url = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid);
+        HttpsURLConnection http = (HttpsURLConnection) url.openConnection();
+        http.setRequestMethod("GET");
+        http.setRequestProperty("User-Agent", "AltCheck");
+        if (http.getResponseCode() == HttpsURLConnection.HTTP_OK) {
+          BufferedReader reader = new BufferedReader(new InputStreamReader(http.getInputStream(), "UTF-8"));
+          UUIDJson json = new Gson().fromJson(reader.readLine(), UUIDJson.class);
+          return json.name;
+        } else {
+          return null;
+        }
+      } catch (IOException ex) {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  @SuppressWarnings("resource")
+  public CountryJson getCountry(Player player) {
+    if (player != null) {
+      try {
+        URL url = new URL("http://freegeoip.net/json/" + getPlayerIP(player));
+        HttpURLConnection http = (HttpURLConnection) url.openConnection();
+        http.setRequestMethod("GET");
+        http.setRequestProperty("User-Agent", "AltCheck");
+        if (http.getResponseCode() == HttpsURLConnection.HTTP_OK) {
+          BufferedReader reader = new BufferedReader(new InputStreamReader(http.getInputStream(), "UTF-8"));
+          CountryJson json = new Gson().fromJson(reader.readLine(), CountryJson.class);
+          return json;
+        } else {
+          return null;
+        }
+      } catch (IOException ex) {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
 }
