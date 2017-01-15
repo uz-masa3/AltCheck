@@ -18,7 +18,7 @@ import org.bukkit.entity.Player;
 
 import com.google.gson.Gson;
 
-public class Util {
+public final class Util {
 
   AltCheck ins = AltCheck.instance;
 
