@@ -22,11 +22,23 @@ public final class Util {
 
   private static AltCheck ins = AltCheck.instance;
 
+  /**
+   * Convert alternative color codes to ChatColor from source string.
+   *
+   * @deprecated Use {@link ChatColor#translateAlternateColorCodes(char, String)}
+   * @param str string to convert alternative color codes
+   * @return Converted String
+   */
   @Deprecated
   public static String color(String str) {
     return ChatColor.translateAlternateColorCodes('&', str);
   }
 
+  /**
+   * Get version string of plugin.
+   *
+   * @return String expression of version
+   */
   public static String getVersion() {
     return ins.getDescription().getVersion();
   }
@@ -70,9 +82,8 @@ public final class Util {
     return new File(path);
   }
 
-  @SuppressWarnings("resource")
-  public String utn(String uuid) {	// UUID to Name
-    if (uuid != "" && uuid.length() == 32) {
+  public String utn(String uuid) { // UUID to Name
+    if (!uuid.equals("") && uuid.length() == 32) {
       try {
         URL url = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid);
         HttpsURLConnection http = (HttpsURLConnection) url.openConnection();
@@ -81,6 +92,7 @@ public final class Util {
         if (http.getResponseCode() == HttpsURLConnection.HTTP_OK) {
           BufferedReader reader = new BufferedReader(new InputStreamReader(http.getInputStream(), "UTF-8"));
           UUIDJson json = new Gson().fromJson(reader.readLine(), UUIDJson.class);
+          reader.close();
           return json.name;
         } else {
           return null;
@@ -93,7 +105,6 @@ public final class Util {
     }
   }
 
-  @SuppressWarnings("resource")
   public CountryJson getCountry(Player player) {
     if (player != null) {
       try {
@@ -104,6 +115,7 @@ public final class Util {
         if (http.getResponseCode() == HttpsURLConnection.HTTP_OK) {
           BufferedReader reader = new BufferedReader(new InputStreamReader(http.getInputStream(), "UTF-8"));
           CountryJson json = new Gson().fromJson(reader.readLine(), CountryJson.class);
+          reader.close();
           return json;
         } else {
           return null;
