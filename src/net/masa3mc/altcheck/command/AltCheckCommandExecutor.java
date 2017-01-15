@@ -62,7 +62,7 @@ public final class AltCheckCommandExecutor implements CommandExecutor {
                   for (String list : u.check(ip)) {
                     OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(list));
                     sender.sendMessage(translateAlternateColorCodes('&',
-                        "&c" + (player == null ? u.utn(list.replace('-', '\0')) : player.getName()) + "&7(" + list + ")"));
+                        "&c" + (player == null ? u.convertUUIDtoName(list.replace('-', '\0')) : player.getName()) + "&7(" + list + ")"));
                   }
                 }).start();
 
@@ -80,7 +80,7 @@ public final class AltCheckCommandExecutor implements CommandExecutor {
                     for (String list : u.check(ip)) {
                       String opn = Bukkit.getOfflinePlayer(UUID.fromString(list)).getName();
                       if (opn == null) {
-                        sender.sendMessage(translateAlternateColorCodes('&', "&c" + u.utn(list.replace("-", "")) + "&7(" + list + ")"));
+                        sender.sendMessage(translateAlternateColorCodes('&', "&c" + u.convertUUIDtoName(list.replace("-", "")) + "&7(" + list + ")"));
                       } else {
                         sender.sendMessage(translateAlternateColorCodes('&', "&c" + opn + "&7(" + list + ")"));
                       }
