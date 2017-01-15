@@ -1,4 +1,4 @@
-package net.masa3mc.altcheck.API;
+package net.masa3mc.altcheck.api;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.Event;
