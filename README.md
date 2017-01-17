@@ -37,3 +37,4 @@ public void checked(net.masa3mc.altcheck.api.AltCheckEvent event) {
 	}
 }
 </code></pre>
+
