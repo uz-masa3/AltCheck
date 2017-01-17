@@ -1,6 +1,12 @@
 package net.masa3mc.altcheck;
 
+/**
+ * JSON structure object
+ */
 public class UUIDJson {
-	public String id;
-	public String name;
+  /** Player ID */
+  public String id;
+
+  /** Player Name */
+  public String name;
 }
