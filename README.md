@@ -26,7 +26,6 @@ public void checked(net.masa3mc.altcheck.api.AltCheckEvent event) {
 	boolean found = event.isDataFound();
 	String target = event.getTarget();
 	List<String> alts = event.getAlts();
-	
 	getLogger().info("getCheckedBy(): "+sender);
 	getLogger().info("isDataFound(): "+found);
 	getLogger().info("getTarget(): "+target);
