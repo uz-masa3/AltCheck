@@ -20,6 +20,7 @@ This plugin can check alt account. But need target already logged to local dataf
 </ul>
 
 <b>AltCheckEvent(AltCheck 1.5 ~)</b>
+<pre><code>
 @EventHandler
 public void checked(net.masa3mc.altcheck.api.AltCheckEvent event) {
 	CommandSender sender = event.getCheckedBy();
@@ -35,3 +36,4 @@ public void checked(net.masa3mc.altcheck.api.AltCheckEvent event) {
 		getLogger().info("alts: "+a);
 	}
 }
+</code></pre>
