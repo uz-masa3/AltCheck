@@ -9,17 +9,21 @@ import net.masa3mc.altcheck.command.AltCheckCommandExecutor;
 
 public final class AltCheck extends JavaPlugin {
 
-  public static AltCheck instance;
-  public static final String ALTCHECK_PREFIX = translateAlternateColorCodes('&', "&c[&7AltCheck&c]&r ");
+	public static AltCheck instance;
+	public static final String ALTCHECK_PREFIX = translateAlternateColorCodes('&', "&c[&7AltCheck&c]&r ");
+	public static int ConfigVersion;
+	public static int NowConfigVersion = 4;
 
-  public void onEnable() {
-    instance = this;
-    saveDefaultConfig();
-    if (getConfig().getInt("configVersion") != 3) {
-      getLogger().warning("Outdated configuration file! Please delete old config.yml and restart!");
-    }
-    Bukkit.getPluginManager().registerEvents(new Listeners(), this);
-    getCommand("altcheck").setExecutor(new AltCheckCommandExecutor(this));
-  }
+	public void onEnable() {
+		instance = this;
+		saveDefaultConfig();
+		ConfigVersion = getConfig().getInt("configVersion");
+		if (ConfigVersion != 4) {
+			getLogger().warning("Outdated configuration file! Please delete old config.yml and restart!");
+		}
+		Messages.load();
+		Bukkit.getPluginManager().registerEvents(new Listeners(), this);
+		getCommand("altcheck").setExecutor(new AltCheckCommandExecutor(this));
+	}
 
 }
