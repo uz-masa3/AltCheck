@@ -14,6 +14,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import net.masa3mc.altcheck.AltCheck;
+import net.masa3mc.altcheck.Messages;
 import net.masa3mc.altcheck.Util;
 import net.masa3mc.altcheck.api.AltCheckEvent;
 
@@ -57,12 +58,11 @@ public final class AltCheckCommandExecutor implements CommandExecutor {
 							String ip = args[1].replace('.', '_');
 							if (u.check(ip) == null) {
 								sender.sendMessage(AltCheck.ALTCHECK_PREFIX
-										+ translateAlternateColorCodes('&', "&7Data not found."));
+										+ Messages.notfound);
 								AltCheckEvent event = new AltCheckEvent(sender, args[1], false, null);
 								Bukkit.getPluginManager().callEvent(event);
 							} else {
-								sender.sendMessage(translateAlternateColorCodes('&',
-										"&7============&c" + args[1] + "&7============"));
+								sender.sendMessage(Messages.checkHeader.replaceAll("%ip%", args[1]));
 
 								new Thread(() -> {
 									List<String> alts = u.check(ip);
@@ -83,12 +83,11 @@ public final class AltCheckCommandExecutor implements CommandExecutor {
 							String ip = getIP.replace('.', '_');
 							if (u.check(ip) == null) {
 								sender.sendMessage(AltCheck.ALTCHECK_PREFIX
-										+ translateAlternateColorCodes('&', "&7Data not found."));
+										+ Messages.notfound);
 								AltCheckEvent event = new AltCheckEvent(sender, p.getName(), false, null);
 								Bukkit.getPluginManager().callEvent(event);
 							} else {
-								sender.sendMessage(translateAlternateColorCodes('&',
-										"&7============&c" + getIP + "&7============"));
+								sender.sendMessage(Messages.checkHeader.replaceAll("%ip%", getIP));
 								Thread t = new Thread() {
 									public void run() {
 										List<String> alts = u.check(ip);
@@ -117,16 +116,17 @@ public final class AltCheckCommandExecutor implements CommandExecutor {
 					}
 				} else {
 					sender.sendMessage(AltCheck.ALTCHECK_PREFIX
-							+ translateAlternateColorCodes('&', "&cYou don't have permission."));
+							+ Messages.noPermission);
 				}
 			} else if (args[0].equalsIgnoreCase("reload")) {
 				if (sender.hasPermission("AltCheck.admin")) {
 					instance.reloadConfig();
+					Messages.load();
 					sender.sendMessage(
-							AltCheck.ALTCHECK_PREFIX + translateAlternateColorCodes('&', "&7Reload complete."));
+							AltCheck.ALTCHECK_PREFIX + Messages.reload);
 				} else {
 					sender.sendMessage(AltCheck.ALTCHECK_PREFIX
-							+ translateAlternateColorCodes('&', "&cYou don't have permission."));
+							+ Messages.noPermission);
 				}
 			} else if (args[0].equalsIgnoreCase("kickmessage")) {
 				if (sender.hasPermission("AltCheck.admin")) {
@@ -139,13 +139,13 @@ public final class AltCheckCommandExecutor implements CommandExecutor {
 						instance.saveConfig();
 						instance.reloadConfig();
 						sender.sendMessage(AltCheck.ALTCHECK_PREFIX
-								+ translateAlternateColorCodes('&', "&aSuccessfully save settings."));
+								+ Messages.save);
 					} else {
 						sender.sendMessage(translateAlternateColorCodes('&', "&7/altcheck kickmessage [Message]"));
 					}
 				} else {
 					sender.sendMessage(AltCheck.ALTCHECK_PREFIX
-							+ translateAlternateColorCodes('&', "&cYou don't have permission."));
+							+ Messages.noPermission);
 				}
 			} else if (args[0].equalsIgnoreCase("maxalt")) {
 				if (sender.hasPermission("AltCheck.admin")) {
@@ -157,20 +157,20 @@ public final class AltCheckCommandExecutor implements CommandExecutor {
 								instance.saveConfig();
 								instance.reloadConfig();
 								sender.sendMessage(AltCheck.ALTCHECK_PREFIX
-										+ translateAlternateColorCodes('&', "&aSuccessfully save settings."));
+										+ Messages.save);
 							} else {
 								sender.sendMessage(translateAlternateColorCodes('&', "&7/altcheck maxalt [1 - 999]"));
 							}
 						} catch (NumberFormatException e) {
 							sender.sendMessage(AltCheck.ALTCHECK_PREFIX
-									+ translateAlternateColorCodes('&', "&cPlease enter a number."));
+									+ Messages.enternumber);
 						}
 					} else {
 						sender.sendMessage(translateAlternateColorCodes('&', "&7/altcheck maxalt [1 - 999]"));
 					}
 				} else {
 					sender.sendMessage(AltCheck.ALTCHECK_PREFIX
-							+ translateAlternateColorCodes('&', "&cYou don't have permission."));
+							+ Messages.noPermission);
 				}
 			} else if (args[0].equalsIgnoreCase("ignore")) {
 				if (sender.hasPermission("AltCheck.admin")) {
@@ -187,7 +187,7 @@ public final class AltCheckCommandExecutor implements CommandExecutor {
 								instance.reloadConfig();
 							}
 							sender.sendMessage(AltCheck.ALTCHECK_PREFIX
-									+ translateAlternateColorCodes('&', "&aSuccessfully save settings."));
+									+ Messages.save);
 						} else {
 							sender.sendMessage(translateAlternateColorCodes('&', "&7/altcheck ignore [UUID]"));
 						}
@@ -196,7 +196,7 @@ public final class AltCheckCommandExecutor implements CommandExecutor {
 					}
 				} else {
 					sender.sendMessage(AltCheck.ALTCHECK_PREFIX
-							+ translateAlternateColorCodes('&', "&cYou don't have permission."));
+							+ Messages.noPermission);
 				}
 			} else {
 				sender.sendMessage(translateAlternateColorCodes('&', "&7=============================="));
