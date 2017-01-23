@@ -2,6 +2,8 @@ package net.masa3mc.altcheck;
 
 import static org.bukkit.ChatColor.*;
 
+import java.util.HashMap;
+
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -12,13 +14,14 @@ public final class AltCheck extends JavaPlugin {
 	public static AltCheck instance;
 	public static final String ALTCHECK_PREFIX = translateAlternateColorCodes('&', "&c[&7AltCheck&c]&r ");
 	public static int ConfigVersion;
-	public static int NowConfigVersion = 4;
+	public static int NowConfigVersion = 5;
+	public static HashMap<String, String> CountryCache = new HashMap<String, String>();
 
 	public void onEnable() {
 		instance = this;
 		saveDefaultConfig();
 		ConfigVersion = getConfig().getInt("configVersion");
-		if (ConfigVersion != 4) {
+		if (ConfigVersion != 5) {
 			getLogger().warning("Outdated configuration file! Please delete old config.yml and restart!");
 		}
 		Messages.load();
