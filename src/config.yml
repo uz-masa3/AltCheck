@@ -1,4 +1,4 @@
-#AltCheck v1.4.5 by uz_masa3
+#AltCheck v1.6 by uz_masa3
 #Translate by Google Translate.
 
 yml: "%altcheck%/data.yml"
@@ -17,5 +17,18 @@ IgnoreUUID:
 - 069a79f4-44e9-4726-a5be-fca90e38aaf5
 - af74a02d-19cb-445b-b07f-6866a861f783
 
+CountryFilter: false
+CountryKickMessage: "Your country is not whitelisted!!"
+WhitelistedCountry:
+  - Japan
+
+messages:
+  notfound: "&7Data not found."
+  checkHeader: "&7============&c%ip%&7============"
+  reload: "&7Reload complete."
+  nopermission: "&cYou don't have permission."
+  save: "&aSuccessfully save settings."
+  enternumber: "&cPlease enter a number."
+
 #DO NOT TOUCH!!!!
-configVersion: 3
+configVersion: 5
