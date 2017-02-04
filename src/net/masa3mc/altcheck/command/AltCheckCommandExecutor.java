@@ -63,7 +63,6 @@ public final class AltCheckCommandExecutor implements CommandExecutor {
 								Bukkit.getPluginManager().callEvent(event);
 							} else {
 								sender.sendMessage(Messages.checkHeader.replaceAll("%ip%", args[1]));
-
 								new Thread(() -> {
 									List<String> alts = u.check(ip);
 									for (String list : alts) {

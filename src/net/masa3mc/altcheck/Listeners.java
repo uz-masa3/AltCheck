@@ -12,16 +12,10 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Score;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.Team;
 
 public class Listeners implements Listener {
 
@@ -39,13 +33,13 @@ public class Listeners implements Listener {
 		if (conf.getBoolean("CountryFilter")) {
 			String country = "";
 			HashMap<String, String> cache = AltCheck.CountryCache;
-			if(cache.size() > 30) {
+			if (cache.size() > 30) {
 				cache.clear();
 			}
 			if (cache.containsKey(p.getName())) {
 				country = cache.get(p.getName());
 			} else {
-				country = u.getCountry(p, ip1[1]).country_name;
+				country = u.getCountry(ip1[1]).country_name;
 				cache.put(p.getName(), country);
 			}
 			if (!conf.getStringList("WhitelistedCountry").contains(country)) {
@@ -154,53 +148,6 @@ public class Listeners implements Listener {
 			} catch (IOException e) {
 				ins.getLogger().warning("IOException: Couldn't write to DataFile.");
 			}
-		}
-	}
-
-	Scoreboard sb = Bukkit.getScoreboardManager().getNewScoreboard();
-	Team red = sb.getTeam("red"); //存在しない場合NullPointerException
-	Team blue = sb.getTeam("blue"); //存在しない場合NullPointerException
-	Objective obj = sb.getObjective("Sidebar"); //存在しない場合NullPointerException
-
-	@EventHandler
-	public void death(PlayerDeathEvent event) {
-		if (event.getEntity().getKiller() instanceof Player) {
-			Player player = event.getEntity();
-			Player killer = player.getKiller();
-			register();
-			if (red.hasEntry(killer.getName())) {
-				setScore(red, 1);
-			} else if (blue.hasEntry(killer.getName())) {
-				setScore(blue, 1);
-			}
-		}
-	}
-
-	private void setScore(Team team, int score) {
-		if (team.equals(red)) {
-			Score redteam = obj.getScore("red");
-			redteam.setScore(score + redteam.getScore());
-		} else if (team.equals(blue)) {
-			Score blueteam = obj.getScore("blue");
-			blueteam.setScore(score + blueteam.getScore());
-		}
-
-	}
-
-	private void register() {
-		for (Player players : Bukkit.getOnlinePlayers()) {
-			players.setScoreboard(sb);
-		}
-		if (obj == null) {
-			sb.registerNewObjective("Sidebar", "dummy");
-			obj.setDisplaySlot(DisplaySlot.SIDEBAR);
-			obj.setDisplayName("Hello world!");//16文字以下
-		}
-		if (red == null) {
-			sb.registerNewTeam("red");
-		}
-		if (blue == null) {
-			sb.registerNewTeam("blue");
 		}
 	}
 
