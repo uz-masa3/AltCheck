@@ -5,13 +5,11 @@ import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.craftbukkit.libs.jline.internal.InputStreamReader;
 import org.bukkit.entity.Player;
@@ -44,26 +42,11 @@ public final class Util {
 	}
 
 	public List<String> check(String IP) {
-		YamlConfiguration yml = getDataYml();
-		if (yml.getString(IP) != null) {
-			ArrayList<String> arraylist = new ArrayList<String>();
-			for (String list : yml.getStringList(IP)) {
-				arraylist.add(list);
-			}
-			return arraylist;
-		} else {
-			return null;
-		}
+		return getDataYml().getStringList(IP);
 	}
 
 	public String getPlayerIP(Player player) {
-		if (player == null) {
-			return null;
-		} else {
-			String[] address = player.getAddress().toString().split("/");
-			String[] ip = address[1].split(":");
-			return ip[0];
-		}
+		return player.getAddress().toString().split("/")[1].split(":")[0];
 	}
 
 	public void checkLog(String sender, String ip) {
@@ -71,14 +54,12 @@ public final class Util {
 	}
 
 	public YamlConfiguration getDataYml() {
-		FileConfiguration conf = ins.getConfig();
-		String path = conf.getString("yml").replace("%altcheck%", ins.getDataFolder().getAbsolutePath());
+		String path = ins.getConfig().getString("yml").replace("%altcheck%", ins.getDataFolder().getAbsolutePath());
 		return YamlConfiguration.loadConfiguration(new File(path));
 	}
 
 	public File getDataFile() {
-		FileConfiguration conf = ins.getConfig();
-		String path = conf.getString("yml").replace("%altcheck%", ins.getDataFolder().getAbsolutePath());
+		String path = ins.getConfig().getString("yml").replace("%altcheck%", ins.getDataFolder().getAbsolutePath());
 		return new File(path);
 	}
 
