@@ -1,4 +1,4 @@
-#AltCheck v1.7 by uz_masa3
+#AltCheck v1.7.5 by uz_masa3
 #Translate by Google Translate.
 
 yml: "%altcheck%/data.yml"
@@ -11,9 +11,9 @@ maxAlt: 2
 #ja: maxAltを上回る数のアカウントで入ってきた場合にKickするメッセージ
 kickMessage: "You can't use alternate accounts."
 
-#en: When join, they aren't kick.
+#en: When join, they aren't check alt accounts.
 #ja: このUUIDが参加した時はmaxAltを上回った場合でもKickされません。
-IgnoreUUID:
+IgnoreCheckAlt:
 - 069a79f4-44e9-4726-a5be-fca90e38aaf5
 - af74a02d-19cb-445b-b07f-6866a861f783
 
@@ -21,6 +21,12 @@ CountryFilter: false
 CountryKickMessage: "Your country is not whitelisted!!"
 WhitelistedCountry:
   - Japan
+
+#en: When join, they aren't check country.
+#ja: このUUIDが参加した時はCountryFilterを無視します。
+IgnoreCountryFilter:
+- 069a79f4-44e9-4726-a5be-fca90e38aaf5
+- af74a02d-19cb-445b-b07f-6866a861f783
 
 messages:
   notfound: "&7Data not found."
@@ -31,4 +37,4 @@ messages:
   enternumber: "&cPlease enter a number."
 
 #DO NOT TOUCH!!!!
-configVersion: 5
+configVersion: 6

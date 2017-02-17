@@ -25,48 +25,52 @@ public class Listeners implements Listener {
 	public void onLogin(PlayerLoginEvent event) {
 		Player p = event.getPlayer();
 		YamlConfiguration yml = u.getDataYml();
-		String[] ip1 = event.getAddress().toString().split("/");
-		String ip = ip1[1].replace('.', '_');
-		String data = "" + p.getUniqueId();
+		String[] ip = event.getAddress().toString().split("/");
+		String ip_ = ip[1].replace('.', '_');
 		Configuration conf = ins.getConfig();
-		if (conf.getBoolean("CountryFilter")) {
-			String country = "";
-			HashMap<String, String> cache = AltCheck.CountryCache;
-			if (cache.size() > 30) {
-				cache.clear();
-			}
-			if (cache.containsKey(p.getName())) {
-				country = cache.get(p.getName());
-			} else {
-				country = u.getCountry(ip1[1]).country_name;
-				cache.put(p.getName(), country);
-			}
-			if (!conf.getStringList("WhitelistedCountry").contains(country)) {
-				p.kickPlayer(conf.getString("CountryKickMessage"));
-				event.setKickMessage(translateAlternateColorCodes('&', conf.getString("CountryKickMessage")));
-				event.setResult(Result.KICK_OTHER);
-				for (Player players : Bukkit.getOnlinePlayers()) {
-					if (players.hasPermission("AltCheck.admin")) {
-						players.sendMessage(AltCheck.ALTCHECK_PREFIX
-								+ translateAlternateColorCodes('&',
-										"&7" + p.getName() + "(" + ip1[1]
-												+ ") was kicked by AltCheck-CountryFilter."));
-					}
-				}
-			}
-		}
-		if (!yml.getStringList(ip).contains(data)) {
-			List<String> arraylist = yml.getStringList(ip);
-			arraylist.add(data);
-			yml.set(ip, arraylist);
+		if (!yml.getStringList(ip_).contains("" + p.getUniqueId())) {
+			List<String> arraylist = yml.getStringList(ip_);
+			arraylist.add("" + p.getUniqueId());
+			yml.set(ip_, arraylist);
 			try {
 				yml.save(u.getDataFile());
 			} catch (IOException e) {
 				ins.getLogger().warning("IOException: Couldn't write to DataFile.");
 			}
 		}
-		if (!conf.getStringList("IgnoreUUID").contains("" + p.getUniqueId())) {
-			if (yml.getStringList(ip).size() > conf.getInt("maxAlt")) {
+		if (conf.getBoolean("CountryFilter")) {
+			if (!conf.getStringList("IgnoreCountryFilter").contains("" + p.getUniqueId())) {
+				if (!ip[1].equals("127.0.0.1") && !ip[1].startsWith("192.168.") && !ip[1].startsWith("10.")
+						&& !ip[1].startsWith("172.31.")) {
+					String country = "";
+					HashMap<String, String> cache = AltCheck.CountryCache;
+					if (cache.size() > 30) {
+						cache.clear();
+					}
+					if (cache.containsKey(p.getName())) {
+						country = cache.get(p.getName());
+					} else {
+						country = u.getCountry(ip[1]).country_name;
+						cache.put(p.getName(), country);
+					}
+					if (!conf.getStringList("WhitelistedCountry").contains(country)) {
+						p.kickPlayer(conf.getString("CountryKickMessage"));
+						event.setKickMessage(translateAlternateColorCodes('&', conf.getString("CountryKickMessage")));
+						event.setResult(Result.KICK_OTHER);
+						for (Player players : Bukkit.getOnlinePlayers()) {
+							if (players.hasPermission("AltCheck.admin")) {
+								players.sendMessage(AltCheck.ALTCHECK_PREFIX
+										+ translateAlternateColorCodes('&',
+												"&7" + p.getName() + "(" + ip[1]
+														+ ") was kicked by AltCheck-CountryFilter."));
+							}
+						}
+					}
+				}
+			}
+		}
+		if (!conf.getStringList("IgnoreCheckAlt").contains("" + p.getUniqueId())) {
+			if (yml.getStringList(ip_).size() > conf.getInt("maxAlt")) {
 				p.kickPlayer(conf.getString("kickMessage"));
 				event.setKickMessage(translateAlternateColorCodes('&', conf.getString("kickMessage")));
 				event.setResult(Result.KICK_OTHER);
@@ -74,7 +78,7 @@ public class Listeners implements Listener {
 					if (players.hasPermission("AltCheck.admin")) {
 						players.sendMessage(AltCheck.ALTCHECK_PREFIX
 								+ translateAlternateColorCodes('&',
-										"&7" + p.getName() + "(" + ip1[1] + ") was kicked by AltCheck- Alt."));
+										"&7" + p.getName() + "(" + ip[1] + ") was kicked by AltCheck- Alt."));
 					}
 				}
 			}

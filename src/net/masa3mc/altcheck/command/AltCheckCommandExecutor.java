@@ -36,18 +36,7 @@ public final class AltCheckCommandExecutor implements CommandExecutor {
 		if (cmd.getName().equalsIgnoreCase("altcheck")) {
 			Util u = new Util();
 			if (args.length < 1) {
-				String[] messages = { /* Messages */
-						"&7==============================", // /* 1 */
-						"&e AltCheck v" + Util.getVersion() + " by uz_masa3", // /* 2 */
-						"&7 - /altcheck check [IP / Player(Online)]", // /* 3 */
-						"&7 - /altcheck reload", // /* 4 */
-						"&7 - /altcheck kickmessage [Message]", // /* 5 */
-						"&7 - /altcheck maxalt [max]", // /* 6 */
-						"&7 - /altcheck ignore [UUID]" // /* 7 */
-				};
-				for (int i = 0; i < messages.length; i++) {
-					sender.sendMessage(translateAlternateColorCodes('&', messages[i]));
-				}
+				help(sender);
 				return true;
 			}
 			if (args[0].equalsIgnoreCase("check")) {
@@ -198,18 +187,26 @@ public final class AltCheckCommandExecutor implements CommandExecutor {
 							+ Messages.noPermission);
 				}
 			} else {
-				sender.sendMessage(translateAlternateColorCodes('&', "&7=============================="));
-				sender.sendMessage(
-						translateAlternateColorCodes('&', "&e AltCheck v" + Util.getVersion() + " by uz_masa3"));
-				sender.sendMessage(translateAlternateColorCodes('&', "&7 - /altcheck check [IP / Player(Online)]"));
-				sender.sendMessage(translateAlternateColorCodes('&', "&7 - /altcheck reload"));
-				sender.sendMessage(translateAlternateColorCodes('&', "&7 - /altcheck kickmessage [Message]"));
-				sender.sendMessage(translateAlternateColorCodes('&', "&7 - /altcheck maxalt [max]"));
-				sender.sendMessage(translateAlternateColorCodes('&', "&7 - /altcheck ignore [UUID]"));
+				help(sender);
 			}
 			return true;
 		}
 		return false;
+	}
+
+	private void help(CommandSender sender) {
+		String[] messages = { /* Messages */
+				"&7==============================", // /* 1 */
+				"&e AltCheck v" + Util.getVersion() + " by uz_masa3", // /* 2 */
+				"&7 - /altcheck check [IP / Player(Online)]", // /* 3 */
+				"&7 - /altcheck reload", // /* 4 */
+				"&7 - /altcheck kickmessage [Message]", // /* 5 */
+				"&7 - /altcheck maxalt [max]", // /* 6 */
+				"&7 - /altcheck ignore [UUID]" // /* 7 */
+		};
+		for (int i = 0; i < messages.length; i++) {
+			sender.sendMessage(translateAlternateColorCodes('&', messages[i]));
+		}
 	}
 
 }
