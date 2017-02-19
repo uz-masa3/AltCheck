@@ -35,11 +35,11 @@ public void api(String address) {
 }
 </code></pre>
 
-日本語config説明
-yml: アカウントデータを保存するファイルを指定。初期ではconfig.ymlと同じ所のdata.ymlに保存される
-maxAlt: 同一IPから設定値以上のログインがあると、そのIPからは入れなくする。初期では2アカウント以上で接続を試みると今後は入れなくする
-kickMessage: maxAltで弾かれた時のメッセージを変えれる
-IgnoreCheckAlt: ここに追加したUUIDはmaxAltで弾かれなくなる
-CountryFilter: 設定国以外からの接続を拒否するかしないか
-CountryKickMessage: 設定国以外から接続した時のkickメッセージを変えれる
-WhitelistedCountry: 初期では日本以外は入れなくなる
+日本語config説明<br>
+yml: アカウントデータを保存するファイルを指定。初期ではconfig.ymlと同じ所のdata.ymlに保存される<br>
+maxAlt: 同一IPから設定値以上のログインがあると、そのIPからは入れなくする。初期では2アカウント以上で接続を試みると今後は入れなくする<br>
+kickMessage: maxAltで弾かれた時のメッセージを変えれる<br>
+IgnoreCheckAlt: ここに追加したUUIDはmaxAltで弾かれなくなる<br>
+CountryFilter: 設定国以外からの接続を拒否するかしないか<br>
+CountryKickMessage: 設定国以外から接続した時のkickメッセージを変えれる<br>
+WhitelistedCountry: 初期では日本以外は入れなくなる<br>
