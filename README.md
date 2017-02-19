@@ -26,14 +26,15 @@ public void checked(AltCheckEvent event) {
 	CommandSender sender = event.getCheckedBy();
 	boolean found = event.isDataFound();
 	String target = event.getTarget();
-	List<String> alts = event.getAlts();
+	//List<String> alts = event.getAlts();
+	List<String> accounts = event.getAccounts();
 	getLogger().info("getCheckedBy(): "+sender);
 	getLogger().info("isDataFound(): "+found);
 	getLogger().info("getTarget(): "+target);
-	getLogger().info("getAlts(): "+alts);
-	if(alts == null)return;
-	for(String a : alts) {
-		getLogger().info("alts: "+a);
+	getLogger().info("getAccouns(): "+accounts);
+	if(accounts == null)return;
+	for(String a : accounts) {
+		getLogger().info("accounts: "+a);
 	}
 }
 </code></pre>
