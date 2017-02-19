@@ -7,22 +7,24 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 public class AltCheckEvent extends Event {
+	
 	/*
 	 *
 	 * added AltCheck v1.5
 	 *
 	 */
+	
 	private static final HandlerList handlers = new HandlerList();
-	CommandSender checkedby;
-	String target;
-	boolean found;
-	List<String> alts;
+	private CommandSender checkedby;
+	private String target;
+	private boolean found;
+	private List<String> accounts;
 
-	public AltCheckEvent(CommandSender CheckedBy, String Target, boolean found, List<String> alts) {
+	public AltCheckEvent(CommandSender CheckedBy, String Target, boolean found, List<String> accounts) {
 		this.checkedby = CheckedBy;
 		this.target = Target;
 		this.found = found;
-		this.alts = alts;
+		this.accounts = accounts;
 	}
 
 	public HandlerList getHandlers() {
@@ -45,8 +47,12 @@ public class AltCheckEvent extends Event {
 		return found;
 	}
 
-	public List<String> getAlts() {
-		return alts;
+	@Deprecated public List<String> getAlts() {
+		return accounts;
+	}
+	
+	public List<String> getAccounts(){
+		return accounts;
 	}
 
 }

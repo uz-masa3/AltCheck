@@ -9,38 +9,18 @@ import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.craftbukkit.libs.jline.internal.InputStreamReader;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 import com.google.gson.Gson;
 
 public final class Util {
 
-	private static AltCheck ins = AltCheck.instance;
+	private AltCheck ins = AltCheck.instance;
 
-	/**
-	 * Convert alternative color codes to ChatColor from source string.
-	 *
-	 * @deprecated Use {@link ChatColor#translateAlternateColorCodes(char, String)}
-	 * @param str string to convert alternative color codes
-	 * @return Converted String
-	 */
 	@Deprecated
-	public static String color(String str) {
-		return ChatColor.translateAlternateColorCodes('&', str);
-	}
-
-	/**
-	 * Get version string of plugin.
-	 *
-	 * @return String expression of version
-	 */
-	public static String getVersion() {
-		return ins.getDescription().getVersion();
-	}
-
 	public List<String> check(String IP) {
 		return getDataYml().getStringList(IP);
 	}
@@ -49,13 +29,12 @@ public final class Util {
 		return player.getAddress().toString().split("/")[1].split(":")[0];
 	}
 
-	public void checkLog(String sender, String ip) {
-		ins.getLogger().info(sender + " checked " + ip + "!");
+	public void checkLog(Plugin plugin, String sender, String ip) {
+		plugin.getLogger().info(sender + " checked " + ip + "!");
 	}
 
 	public YamlConfiguration getDataYml() {
-		String path = ins.getConfig().getString("yml").replace("%altcheck%", ins.getDataFolder().getAbsolutePath());
-		return YamlConfiguration.loadConfiguration(new File(path));
+		return YamlConfiguration.loadConfiguration(getDataFile());
 	}
 
 	public File getDataFile() {

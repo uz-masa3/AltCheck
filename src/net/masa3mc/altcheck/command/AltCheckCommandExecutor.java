@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import net.masa3mc.altcheck.AltCheck;
 import net.masa3mc.altcheck.Messages;
 import net.masa3mc.altcheck.Util;
+import net.masa3mc.altcheck.api.AltCheckAPI;
 import net.masa3mc.altcheck.api.AltCheckEvent;
 
 public final class AltCheckCommandExecutor implements CommandExecutor {
@@ -33,7 +34,6 @@ public final class AltCheckCommandExecutor implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		if (cmd.getName().equalsIgnoreCase("altcheck")) {
-			Util u = new Util();
 			if (args.length < 1) {
 				help(sender);
 				return true;
@@ -41,10 +41,11 @@ public final class AltCheckCommandExecutor implements CommandExecutor {
 			if (args[0].equalsIgnoreCase("check")) {
 				if (sender.hasPermission("AltCheck.admin")) {
 					if (args.length == 2) {
-						u.checkLog(sender.getName(), args[1]);
+						Util u = new Util();
+						u.checkLog(instance, sender.getName(), args[1]);
 						if (Bukkit.getPlayerExact(args[1]) == null) {
-							String ip = args[1].replace('.', '_');
-							if (u.check(ip) == null) {
+							AltCheckAPI api = new AltCheckAPI(args[1]);
+							if (api.getAccounts() == null) {
 								sender.sendMessage(AltCheck.ALTCHECK_PREFIX
 										+ Messages.notfound);
 								AltCheckEvent event = new AltCheckEvent(sender, args[1], false, null);
@@ -52,14 +53,14 @@ public final class AltCheckCommandExecutor implements CommandExecutor {
 							} else {
 								sender.sendMessage(Messages.checkHeader.replaceAll("%ip%", args[1]));
 								new Thread(() -> {
-									List<String> alts = u.check(ip);
-									for (String list : alts) {
+									List<String> accounts = api.getAccounts();
+									for (String list : accounts) {
 										OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(list));
 										sender.sendMessage(translateAlternateColorCodes('&',
 												"&c" + (player == null ? u.convertUUIDtoName(list.replace('-', '\0'))
 														: player.getName()) + "&7(" + list + ")"));
 									}
-									AltCheckEvent event = new AltCheckEvent(sender, args[1], true, alts);
+									AltCheckEvent event = new AltCheckEvent(sender, args[1], true, accounts);
 									Bukkit.getPluginManager().callEvent(event);
 								}).start();
 
@@ -67,33 +68,30 @@ public final class AltCheckCommandExecutor implements CommandExecutor {
 						} else {
 							Player p = Bukkit.getPlayer(args[1]);
 							String getIP = u.getPlayerIP(p);
-							String ip = getIP.replace('.', '_');
-							if (u.check(ip) == null) {
+							AltCheckAPI api = new AltCheckAPI(getIP);
+							if (api.getAccounts() == null) {
 								sender.sendMessage(AltCheck.ALTCHECK_PREFIX
 										+ Messages.notfound);
 								AltCheckEvent event = new AltCheckEvent(sender, p.getName(), false, null);
 								Bukkit.getPluginManager().callEvent(event);
 							} else {
 								sender.sendMessage(Messages.checkHeader.replaceAll("%ip%", getIP));
-								Thread t = new Thread() {
-									public void run() {
-										List<String> alts = u.check(ip);
-										for (String list : alts) {
-											String opn = Bukkit.getOfflinePlayer(UUID.fromString(list)).getName();
-											if (opn == null) {
-												sender.sendMessage(translateAlternateColorCodes('&',
-														"&c" + u.convertUUIDtoName(list.replace("-", "")) + "&7(" + list
-																+ ")"));
-											} else {
-												sender.sendMessage(translateAlternateColorCodes('&',
-														"&c" + opn + "&7(" + list + ")"));
-											}
+								new Thread(() -> {
+									List<String> accounts = api.getAccounts();
+									for (String list : accounts) {
+										String opn = Bukkit.getOfflinePlayer(UUID.fromString(list)).getName();
+										if (opn == null) {
+											sender.sendMessage(translateAlternateColorCodes('&',
+													"&c" + u.convertUUIDtoName(list.replace("-", "")) + "&7(" + list
+															+ ")"));
+										} else {
+											sender.sendMessage(translateAlternateColorCodes('&',
+													"&c" + opn + "&7(" + list + ")"));
 										}
-										AltCheckEvent event = new AltCheckEvent(sender, p.getName(), true, alts);
-										Bukkit.getPluginManager().callEvent(event);
 									}
-								};
-								t.start();
+									AltCheckEvent event = new AltCheckEvent(sender, p.getName(), true, accounts);
+									Bukkit.getPluginManager().callEvent(event);
+								}).start();
 
 							}
 						}
@@ -126,7 +124,7 @@ public final class AltCheckCommandExecutor implements CommandExecutor {
 	private void help(CommandSender sender) {
 		String[] messages = { /* Messages */
 				"&7==============================", // /* 1 */
-				"&e AltCheck v" + Util.getVersion() + " by uz_masa3", // /* 2 */
+				"&e AltCheck v" + instance.getDescription().getVersion() + " by uz_masa3", // /* 2 */
 				"&7 - /altcheck check [IP / Player(Online)]", // /* 3 */
 				"&7 - /altcheck reload", // /* 4 */
 		};

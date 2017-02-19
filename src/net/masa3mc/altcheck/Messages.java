@@ -1,5 +1,6 @@
 package net.masa3mc.altcheck;
 
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class Messages {
@@ -12,13 +13,10 @@ public class Messages {
 	public static String enternumber = c("&cPlease enter a number.");
 	
 	private static String c(String str) {
-		return new Util().color(str);
+		return ChatColor.translateAlternateColorCodes('&', str);
 	}
 	
 	public static void load() {
-		if(AltCheck.ConfigVersion != AltCheck.NowConfigVersion) {
-			return;
-		}
 		FileConfiguration conf = AltCheck.instance.getConfig();
 		notfound = c(conf.getString("messages.notfound"));
 		checkHeader = c(conf.getString("messages.checkHeader"));
