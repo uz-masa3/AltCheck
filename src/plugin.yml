@@ -3,11 +3,13 @@ version: 1.8
 main: net.masa3mc.altcheck.AltCheck
 author: uz_masa3
 website: https://www.masa3MC.net/
+
 commands:
     altcheck:
       usage: /altcheck
       aliases: [ac,alc]
       description: You can see the help.
+
 permissions:
   altcheck.default:
     default: true
