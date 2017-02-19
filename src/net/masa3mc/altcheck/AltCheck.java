@@ -19,7 +19,7 @@ public final class AltCheck extends JavaPlugin {
 	public void onEnable() {
 		instance = this;
 		saveDefaultConfig();
-		if (getConfig().getInt("configVersion") != 6) {
+		if (getConfig().getInt("configVersion") != 7) {
 			getLogger().warning("Outdated configuration file! Please delete old config.yml and restart!");
 		}
 		Messages.load();

@@ -21,7 +21,11 @@ public class AltCheckAPI {
 	
 	//v1.8 ~
 	public List<String> getAccounts() {
-		return util.getDataYml().getStringList(ip);
+		List<String> list = util.getDataYml().getStringList(ip);
+		if(list == null || list.isEmpty()) {
+			return null;
+		}
+		return list;
 	}
 	
 }

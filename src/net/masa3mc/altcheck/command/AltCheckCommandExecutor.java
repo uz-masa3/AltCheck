@@ -35,7 +35,12 @@ public final class AltCheckCommandExecutor implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		if (cmd.getName().equalsIgnoreCase("altcheck")) {
 			if (args.length < 1) {
-				help(sender);
+				if (sender.hasPermission("AltCheck.admin")) {
+					help(sender);
+				} else {
+					sender.sendMessage(AltCheck.ALTCHECK_PREFIX
+							+ Messages.noPermission);
+				}
 				return true;
 			}
 			if (args[0].equalsIgnoreCase("check")) {
@@ -45,31 +50,29 @@ public final class AltCheckCommandExecutor implements CommandExecutor {
 						u.checkLog(instance, sender.getName(), args[1]);
 						if (Bukkit.getPlayerExact(args[1]) == null) {
 							AltCheckAPI api = new AltCheckAPI(args[1]);
-							if (api.getAccounts() == null) {
+							if (api.getAccounts() == null || api.getAccounts().isEmpty()) {
 								sender.sendMessage(AltCheck.ALTCHECK_PREFIX
 										+ Messages.notfound);
-								AltCheckEvent event = new AltCheckEvent(sender, args[1], false, null);
-								Bukkit.getPluginManager().callEvent(event);
+								Bukkit.getPluginManager().callEvent(new AltCheckEvent(sender, args[1], false, null));
 							} else {
 								sender.sendMessage(Messages.checkHeader.replaceAll("%ip%", args[1]));
 								new Thread(() -> {
 									List<String> accounts = api.getAccounts();
-									for (String list : accounts) {
+									accounts.forEach(list -> {
 										OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(list));
 										sender.sendMessage(translateAlternateColorCodes('&',
 												"&c" + (player == null ? u.convertUUIDtoName(list.replace('-', '\0'))
 														: player.getName()) + "&7(" + list + ")"));
-									}
-									AltCheckEvent event = new AltCheckEvent(sender, args[1], true, accounts);
-									Bukkit.getPluginManager().callEvent(event);
+									});
+									Bukkit.getPluginManager()
+											.callEvent(new AltCheckEvent(sender, args[1], true, accounts));
 								}).start();
-
 							}
 						} else {
 							Player p = Bukkit.getPlayer(args[1]);
 							String getIP = u.getPlayerIP(p);
 							AltCheckAPI api = new AltCheckAPI(getIP);
-							if (api.getAccounts() == null) {
+							if (api.getAccounts() == null || api.getAccounts().isEmpty()) {
 								sender.sendMessage(AltCheck.ALTCHECK_PREFIX
 										+ Messages.notfound);
 								AltCheckEvent event = new AltCheckEvent(sender, p.getName(), false, null);
@@ -78,21 +81,15 @@ public final class AltCheckCommandExecutor implements CommandExecutor {
 								sender.sendMessage(Messages.checkHeader.replaceAll("%ip%", getIP));
 								new Thread(() -> {
 									List<String> accounts = api.getAccounts();
-									for (String list : accounts) {
-										String opn = Bukkit.getOfflinePlayer(UUID.fromString(list)).getName();
-										if (opn == null) {
-											sender.sendMessage(translateAlternateColorCodes('&',
-													"&c" + u.convertUUIDtoName(list.replace("-", "")) + "&7(" + list
-															+ ")"));
-										} else {
-											sender.sendMessage(translateAlternateColorCodes('&',
-													"&c" + opn + "&7(" + list + ")"));
-										}
-									}
-									AltCheckEvent event = new AltCheckEvent(sender, p.getName(), true, accounts);
-									Bukkit.getPluginManager().callEvent(event);
+									accounts.forEach(list -> {
+										OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(list));
+										sender.sendMessage(translateAlternateColorCodes('&',
+												"&c" + (player == null ? u.convertUUIDtoName(list.replace('-', '\0'))
+														: player.getName()) + "&7(" + list + ")"));
+									});
+									Bukkit.getPluginManager()
+											.callEvent(new AltCheckEvent(sender, p.getName(), true, accounts));
 								}).start();
-
 							}
 						}
 					} else {
@@ -105,10 +102,49 @@ public final class AltCheckCommandExecutor implements CommandExecutor {
 				}
 			} else if (args[0].equalsIgnoreCase("reload")) {
 				if (sender.hasPermission("AltCheck.admin")) {
-					instance.reloadConfig();
-					Messages.load();
-					sender.sendMessage(
-							AltCheck.ALTCHECK_PREFIX + Messages.reload);
+					if (args.length == 1) {
+						instance.reloadConfig();
+						Messages.load();
+						sender.sendMessage(
+								AltCheck.ALTCHECK_PREFIX + Messages.reload);
+					} else {
+						sender.sendMessage(AltCheck.ALTCHECK_PREFIX
+								+ translateAlternateColorCodes('&', "&7/altcheck reload"));
+					}
+				} else {
+					sender.sendMessage(AltCheck.ALTCHECK_PREFIX
+							+ Messages.noPermission);
+				}
+			} else if (args[0].equalsIgnoreCase("list")) {
+				if (sender.hasPermission("AltCheck.admin")) {
+					if (args.length == 1) {
+						Util u = new Util();
+						new Thread(() -> {
+							Bukkit.getOnlinePlayers().forEach(players -> {
+								String country = AltCheck.CountryCache.get(players.getName());
+								String ip = u.getPlayerIP(players);
+								if (ip.equals("127.0.0.1") || ip.startsWith("192.168.") || ip.startsWith("10.")
+										|| ip.startsWith("172.31.")) {
+									country = "LocalNetwork";
+								} else {
+									if (country == null) {
+										country = u.getCountry(players).country_name;
+									}
+									if (country.equals("") || country.isEmpty()) {
+										country = "Unknow";
+									}
+								}
+								sender.sendMessage(AltCheck.ALTCHECK_PREFIX + translateAlternateColorCodes('&',
+										instance.getConfig().getString("messages.list", "&c%user%&7(%country% / %ip%)")
+												.replaceAll("%user%", players.getName())
+												.replaceAll("%country%", country).replaceAll("%ip%", ip)));
+
+							});
+						}).start();
+					} else {
+						sender.sendMessage(AltCheck.ALTCHECK_PREFIX
+								+ translateAlternateColorCodes('&', "&7/altcheck list"));
+					}
 				} else {
 					sender.sendMessage(AltCheck.ALTCHECK_PREFIX
 							+ Messages.noPermission);
@@ -116,17 +152,17 @@ public final class AltCheckCommandExecutor implements CommandExecutor {
 			} else {
 				help(sender);
 			}
-			return true;
 		}
-		return false;
+		return true;
 	}
 
 	private void help(CommandSender sender) {
-		String[] messages = { /* Messages */
-				"&7==============================", // /* 1 */
-				"&e AltCheck v" + instance.getDescription().getVersion() + " by uz_masa3", // /* 2 */
-				"&7 - /altcheck check [IP / Player(Online)]", // /* 3 */
-				"&7 - /altcheck reload", // /* 4 */
+		String[] messages = {
+				"&7==============================",
+				"&e AltCheck v" + instance.getDescription().getVersion() + " by uz_masa3",
+				"&7 - /altcheck check [IP / Player(Online)]",
+				"&7 - /altcheck list",
+				"&7 - /altcheck reload",
 		};
 		for (int i = 0; i < messages.length; i++) {
 			sender.sendMessage(translateAlternateColorCodes('&', messages[i]));
