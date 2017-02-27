@@ -1,7 +1,5 @@
 package net.masa3mc.altcheck;
 
-import static org.bukkit.ChatColor.*;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +13,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
+
+import static org.bukkit.ChatColor.*;
 
 public class Listeners implements Listener {
 
