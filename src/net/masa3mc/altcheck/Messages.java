@@ -12,10 +12,6 @@ public class Messages {
 	public static String save = c("&aSuccessfully save settings.");
 	public static String enternumber = c("&cPlease enter a number.");
 	
-	private static String c(String str) {
-		return ChatColor.translateAlternateColorCodes('&', str);
-	}
-	
 	public static void load() {
 		FileConfiguration conf = AltCheck.instance.getConfig();
 		notfound = c(conf.getString("messages.notfound"));
@@ -24,6 +20,10 @@ public class Messages {
 		noPermission = c(conf.getString("messages.nopermission"));
 		save = c(conf.getString("messages.save"));
 		enternumber = c(conf.getString("messages.enternumber"));
+	}
+	
+	private static String c(String str) {
+		return ChatColor.translateAlternateColorCodes('&', str);
 	}
 	
 }
