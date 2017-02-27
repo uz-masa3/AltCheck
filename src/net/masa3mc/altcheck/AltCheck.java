@@ -9,6 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import net.masa3mc.altcheck.api.AltCheckAPI;
 import net.masa3mc.altcheck.command.AltCheckCommandExecutor;
+import net.masa3mc.altcheck.command.AltCheckCommandTabCompleter;
 
 public final class AltCheck extends JavaPlugin {
 
@@ -19,12 +20,15 @@ public final class AltCheck extends JavaPlugin {
 	public void onEnable() {
 		instance = this;
 		saveDefaultConfig();
-		if (getConfig().getInt("configVersion") != 7) {
-			getLogger().warning("Outdated configuration file! Please delete old config.yml and restart!");
+		if (getConfig().getInt("configVersion") < 8) {
+			getLogger().warning("Outdated configVersion! Please delete old config.yml and restart!");
+		}else if(getConfig().getInt("configVersion") > 8) {
+			getLogger().warning("Incorrect configVersion! Please delete config.yml and restart!");
 		}
 		Messages.load();
-		Bukkit.getPluginManager().registerEvents(new Listeners(), this);
+		Bukkit.getPluginManager().registerEvents(new Listeners(this), this);
 		getCommand("altcheck").setExecutor(new AltCheckCommandExecutor(this));
+		getCommand("altcheck").setTabCompleter(new AltCheckCommandTabCompleter());
 	}
 	
 	public static AltCheckAPI getData(String address) {
@@ -32,7 +36,7 @@ public final class AltCheck extends JavaPlugin {
 	}
 
 	public static AltCheckAPI getData(Player player) {
-		return getData(new Util().getPlayerIP(player));
+		return getData(player.getAddress().toString().split("/")[1].split(":")[0]);
 	}
 
 }

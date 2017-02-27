@@ -19,7 +19,15 @@ import org.bukkit.event.player.PlayerLoginEvent.Result;
 public class Listeners implements Listener {
 
 	private final Util u = new Util();
-	private final AltCheck ins = AltCheck.instance;
+	private final AltCheck ins;
+
+	public Listeners() {
+		this.ins = null;
+	}
+
+	public Listeners(AltCheck instance) {
+		this.ins = instance;
+	}
 
 	@EventHandler
 	public void onLogin(PlayerLoginEvent event) {
@@ -38,36 +46,35 @@ public class Listeners implements Listener {
 				ins.getLogger().warning("IOException: Couldn't write to DataFile.");
 			}
 		}
-		if (conf.getBoolean("CountryFilter")) {
-			if (!conf.getStringList("IgnoreCountryFilter").contains("" + p.getUniqueId())) {
-				if (ip[1].equals("127.0.0.1") || ip[1].startsWith("192.168.") || ip[1].startsWith("10.")
-						|| ip[1].startsWith("172.31.")) {
-					AltCheck.CountryCache.put(p.getName(), "LocalNetwork");
+		if (conf.getBoolean("CountryFilter")
+				&& !conf.getStringList("IgnoreCountryFilter").contains("" + p.getUniqueId())) {
+			if (ip[1].equals("127.0.0.1") || ip[1].startsWith("192.168.") || ip[1].startsWith("10.")
+					|| ip[1].startsWith("172.31.")) {
+				AltCheck.CountryCache.put(p.getName(), "LocalNetwork");
+			} else {
+				String country = "";
+				HashMap<String, String> cache = AltCheck.CountryCache;
+				if (cache.size() > 30) {
+					cache.clear();
+				}
+				if (cache.containsKey(p.getName())) {
+					country = cache.get(p.getName());
 				} else {
-					String country = "";
-					HashMap<String, String> cache = AltCheck.CountryCache;
-					if (cache.size() > 30) {
-						cache.clear();
-					}
-					if (cache.containsKey(p.getName())) {
-						country = cache.get(p.getName());
-					} else {
-						country = u.getCountry(ip[1]).country_name;
-						cache.put(p.getName(), country);
-					}
-					if (!conf.getStringList("WhitelistedCountry").contains(country)) {
-						p.kickPlayer(conf.getString("CountryKickMessage"));
-						event.setKickMessage(translateAlternateColorCodes('&', conf.getString("CountryKickMessage")));
-						event.setResult(Result.KICK_OTHER);
-						Bukkit.getOnlinePlayers().forEach(players -> {
-							if (players.hasPermission("AltCheck.admin")) {
-								players.sendMessage(AltCheck.ALTCHECK_PREFIX
-										+ translateAlternateColorCodes('&',
-												"&7" + p.getName() + "(" + ip[1]
-														+ ") was kicked by AltCheck-CountryFilter."));
-							}
-						});
-					}
+					country = u.getCountry(ip[1]).country_name;
+					cache.put(p.getName(), country);
+				}
+				if (!conf.getStringList("WhitelistedCountry").contains(country)) {
+					p.kickPlayer(conf.getString("CountryKickMessage"));
+					event.setKickMessage(translateAlternateColorCodes('&', conf.getString("CountryKickMessage")));
+					event.setResult(Result.KICK_OTHER);
+					Bukkit.getOnlinePlayers().forEach(players -> {
+						if (players.hasPermission("AltCheck.admin")) {
+							players.sendMessage(AltCheck.ALTCHECK_PREFIX
+									+ translateAlternateColorCodes('&',
+											"&7" + p.getName() + "(" + ip[1]
+													+ ") was kicked by AltCheck-CountryFilter."));
+						}
+					});
 				}
 			}
 		}
@@ -90,23 +97,23 @@ public class Listeners implements Listener {
 	@EventHandler
 	public void onJoin(PlayerJoinEvent event) {
 		Player p = event.getPlayer();
-		new Thread(() -> {
-			final YamlConfiguration yml = u.getDataYml();
-			final String ip_ = u.getPlayerIP(p);
-			final String ip = u.getPlayerIP(p).replace('.', '_');
-			if (ip_.equals("127.0.0.1") || ip_.startsWith("192.168.") || ip_.startsWith("10.")
-					|| ip_.startsWith("172.31.")) {
-				Bukkit.getOnlinePlayers().forEach(players -> {
-					if (players.hasPermission("AltCheck.admin")) {
-						players.sendMessage(AltCheck.ALTCHECK_PREFIX
-								+ translateAlternateColorCodes('&', "&7" + p.getName() + " (LocalNetwork) has "
-										+ yml.getStringList(ip).size() + " accounts."));
-					}
-				});
-			} else {
-				String country = AltCheck.CountryCache.get(p.getName());
-				if (country == null) {
-					CountryJson json = u.getCountry(p);
+		YamlConfiguration yml = u.getDataYml();
+		String ip_ = p.getAddress().toString().split("/")[1].split(":")[0];
+		String ip = ip_.replace('.', '_');
+		if (ip_.equals("127.0.0.1") || ip_.startsWith("192.168.") || ip_.startsWith("10.")
+				|| ip_.startsWith("172.31.")) {
+			Bukkit.getOnlinePlayers().forEach(players -> {
+				if (players.hasPermission("AltCheck.admin")) {
+					players.sendMessage(AltCheck.ALTCHECK_PREFIX
+							+ translateAlternateColorCodes('&', "&7" + p.getName() + " (LocalNetwork) has "
+									+ yml.getStringList(ip).size() + " accounts."));
+				}
+			});
+		} else {
+			String country = AltCheck.CountryCache.get(p.getName());
+			if (country == null || country.isEmpty()) {
+				new Thread(() -> {
+					CountryJson json = u.getCountry(ip_);
 					if (json == null) {
 						Bukkit.getOnlinePlayers().forEach(players -> {
 							if (players.hasPermission("AltCheck.admin")) {
@@ -124,18 +131,19 @@ public class Listeners implements Listener {
 														+ yml.getStringList(ip).size() + " accounts."));
 							}
 						});
+						AltCheck.CountryCache.put(p.getName(), json.country_name);
 					}
-				} else {
-					Bukkit.getOnlinePlayers().forEach(players -> {
-						if (players.hasPermission("AltCheck.admin")) {
-							players.sendMessage(AltCheck.ALTCHECK_PREFIX + translateAlternateColorCodes('&',
-									"&7" + p.getName() + " (" + country + ") has " + yml.getStringList(ip).size()
-											+ " accounts."));
-						}
-					});
-				}
+				}).start();
+			} else {
+				Bukkit.getOnlinePlayers().forEach(players -> {
+					if (players.hasPermission("AltCheck.admin")) {
+						players.sendMessage(AltCheck.ALTCHECK_PREFIX + translateAlternateColorCodes('&',
+								"&7" + p.getName() + " (" + country + ") has " + yml.getStringList(ip).size()
+										+ " accounts."));
+					}
+				});
 			}
-		}).start();
+		}
 	}
 
 }

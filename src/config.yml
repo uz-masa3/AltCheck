@@ -38,6 +38,7 @@ messages:
   save: "&aSuccessfully save settings."
   enternumber: "&cPlease enter a number."
   list: "&c%user%&7(%country% / %ip%)"
+  noplayers: "&c"
 
 #DO NOT TOUCH!!!!
-configVersion: 7
+configVersion: 8
