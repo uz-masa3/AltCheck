@@ -25,7 +25,8 @@ public void checked(AltCheckEvent event) {
 <b>net.masa3mc.altcheck.api.AltCheckAPI(AltCheck 1.8 ~)</b>
 <pre><code>
 public void api(String address) {
-	AltCheckAPI api = new AltCheckAPI(address);
+	//AltCheckAPI api = new AltCheckAPI(address);
+	AltCheckAPI api = AltCheck.getData(address or Player);
 	List<String> accounts = api.getAccounts();
 	getLogger().info("getAccounts(): " + accounts);
 	if(alts == null)return;
