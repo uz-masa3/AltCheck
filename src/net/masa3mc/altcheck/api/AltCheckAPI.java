@@ -29,6 +29,7 @@ public class AltCheckAPI {
 	}
 
 	/*
+	//v1.9.5 ~
 	public void setAccounts(List<String> data) throws IOException {
 		YamlConfiguration yml  = util.getDataYml();
 		yml.set(ip, data);
