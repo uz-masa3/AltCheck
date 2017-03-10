@@ -29,7 +29,7 @@ public void api(String address) {
 	AltCheckAPI api = AltCheck.getData(address or Player);
 	List<String> accounts = api.getAccounts();
 	getLogger().info("getAccounts(): " + accounts);
-	if(alts == null)return;
+	if(accounts == null)return;
 	for(String a : accounts) {
 		getLogger().info("Account: " + a);
 	}
