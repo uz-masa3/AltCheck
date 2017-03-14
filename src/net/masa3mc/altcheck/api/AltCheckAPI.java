@@ -12,27 +12,29 @@ public class AltCheckAPI {
 	 *
 	 */
 
-	private Util util = new Util();
+	private final Util util = new Util();
 	private String ip;
+	private List<String> accounts;
 
 	public AltCheckAPI(String ip) {
 		this.ip = ip.trim().replace(".", "_");
+		this.accounts = util.getDataYml().getStringList(ip);
 	}
 
 	//v1.8 ~
 	public List<String> getAccounts() {
-		List<String> list = util.getDataYml().getStringList(ip);
-		if (list == null || list.isEmpty()) {
-			return null;
-		}
-		return list;
+		return this.accounts;
 	}
-
+	
+	public void setAccounts(List<String> accounts){
+		this.accounts = accounts;
+	}
+	
 	/*
 	//v1.9.5 ~
-	public void setAccounts(List<String> data) throws IOException {
+	public void saveAccounts() throws IOException {
 		YamlConfiguration yml  = util.getDataYml();
-		yml.set(ip, data);
+		yml.set(this.ip, this.accounts);
 		yml.save(util.getDataFile());
 	}
 	*/
