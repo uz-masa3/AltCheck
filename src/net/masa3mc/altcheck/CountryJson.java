@@ -2,31 +2,34 @@ package net.masa3mc.altcheck;
 
 public class CountryJson {
 
-  /** IPアドレス */
-  public String ip;
+	/** IPアドレス */
+	public String ip;
 
-  /** 国コード */
-  public String country_code;
+	/** 街 */
+	public String city;
 
-  /** 国名 */
-  public String country_name;
+	/** 地域名 */
+	public String region;
 
-  /** 地域名 */
-  public String region_name;
+	/** 地域コード */
+	public String region_code;
 
-  /** 街 */
-  public String city;
+	/** 国*/
+	public String country;
 
-  /** 郵便番号 */
-  public String zip_code;
+	/** 国名 */
+	public String country_name;
 
-  /** タイムゾーン */
-  public String time_zone;
+	/** 郵便番号 */
+	public String postal;
 
-  /** 経度 */
-  public String latitude;
+	/** タイムゾーン */
+	public String timezone;
 
-  /** 緯度 */
-  public String longitude;
+	/** 経度 */
+	public String latitude;
+
+	/** 緯度 */
+	public String longitude;
 
 }

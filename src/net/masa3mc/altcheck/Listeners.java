@@ -1,5 +1,7 @@
 package net.masa3mc.altcheck;
 
+import static org.bukkit.ChatColor.*;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -13,8 +15,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
-
-import static org.bukkit.ChatColor.*;
 
 public class Listeners implements Listener {
 
@@ -32,20 +32,24 @@ public class Listeners implements Listener {
 	@EventHandler
 	public void onLogin(PlayerLoginEvent event) {
 		Player p = event.getPlayer();
-		YamlConfiguration yml = u.getDataYml();
 		String[] ip = event.getAddress().toString().split("/");
 		String ip_ = ip[1].replace('.', '_');
 		Configuration conf = ins.getConfig();
-		if (!yml.getStringList(ip_).contains("" + p.getUniqueId())) {
-			List<String> arraylist = yml.getStringList(ip_);
-			arraylist.add("" + p.getUniqueId());
-			yml.set(ip_, arraylist);
-			try {
-				yml.save(u.getDataFile());
-			} catch (IOException e) {
-				ins.getLogger().warning("IOException: Couldn't write to DataFile.");
+		new Thread() {
+			public void run() {
+				YamlConfiguration yml = u.getDataYml();
+				if (!yml.getStringList(ip_).contains("" + p.getUniqueId())) {
+					List<String> arraylist = yml.getStringList(ip_);
+					arraylist.add("" + p.getUniqueId());
+					yml.set(ip_, arraylist);
+					try {
+						yml.save(u.getDataFile());
+					} catch (IOException e) {
+						ins.getLogger().warning("IOException: Couldn't write to DataFile.");
+					}
+				}
 			}
-		}
+		};
 		if (conf.getBoolean("CountryFilter")
 				&& !conf.getStringList("IgnoreCountryFilter").contains("" + p.getUniqueId())) {
 			if (ip[1].equals("127.0.0.1") || ip[1].startsWith("192.168.") || ip[1].startsWith("10.")
@@ -79,6 +83,7 @@ public class Listeners implements Listener {
 			}
 		}
 		if (!conf.getStringList("IgnoreCheckAlt").contains("" + p.getUniqueId())) {
+			YamlConfiguration yml = u.getDataYml();
 			if (yml.getStringList(ip_).size() > conf.getInt("maxAlt")) {
 				p.kickPlayer(conf.getString("kickMessage"));
 				event.setKickMessage(translateAlternateColorCodes('&', conf.getString("kickMessage")));
@@ -96,10 +101,12 @@ public class Listeners implements Listener {
 
 	@EventHandler
 	public void onJoin(PlayerJoinEvent event) {
+		/*
 		Player p = event.getPlayer();
 		YamlConfiguration yml = u.getDataYml();
 		String ip_ = p.getAddress().toString().split("/")[1].split(":")[0];
 		String ip = ip_.replace('.', '_');
+		
 		if (ip_.equals("127.0.0.1") || ip_.startsWith("192.168.") || ip_.startsWith("10.")
 				|| ip_.startsWith("172.31.")) {
 			Bukkit.getOnlinePlayers().forEach(players -> {
@@ -129,6 +136,7 @@ public class Listeners implements Listener {
 										+ translateAlternateColorCodes('&',
 												"&7" + p.getName() + " (" + json.country_name + ") has "
 														+ yml.getStringList(ip).size() + " accounts."));
+														
 							}
 						});
 						AltCheck.CountryCache.put(p.getName(), json.country_name);
@@ -144,6 +152,7 @@ public class Listeners implements Listener {
 				});
 			}
 		}
+		*/
 	}
 
 }

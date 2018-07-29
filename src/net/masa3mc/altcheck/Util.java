@@ -51,13 +51,18 @@ public final class Util {
 
 	public CountryJson getCountry(String ip) {
 		try {
-			URL url = new URL("http://freegeoip.net/json/" + ip);
+			URL url = new URL("https://ipapi.co/" + ip + "/json/");
 			HttpURLConnection http = (HttpURLConnection) url.openConnection();
 			http.setRequestMethod("GET");
 			http.setRequestProperty("User-Agent", "AltCheck");
 			if (http.getResponseCode() == HttpsURLConnection.HTTP_OK) {
 				BufferedReader reader = new BufferedReader(new InputStreamReader(http.getInputStream(), "UTF-8"));
-				CountryJson json = new Gson().fromJson(reader.readLine(), CountryJson.class);
+				StringBuilder sb = new StringBuilder();
+				String line;
+				while ((line = reader.readLine()) != null) {
+					sb.append(line);
+				}
+				CountryJson json = new Gson().fromJson(sb.toString(), CountryJson.class);
 				reader.close();
 				return json;
 			} else {

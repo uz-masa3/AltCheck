@@ -54,15 +54,17 @@ public final class AltCheckCommandExecutor implements CommandExecutor {
 									+ Messages.notfound);
 							Bukkit.getPluginManager().callEvent(new AltCheckEvent(sender, args[1], false, null));
 						} else {
-							sender.sendMessage(Messages.checkHeader.replaceAll("%ip%", args[1]));
 							new Thread(() -> {
 								List<String> accounts = api.getAccounts();
-								accounts.forEach(list -> {
-									OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(list));
-									sender.sendMessage(translateAlternateColorCodes('&',
-											"&c" + (player == null ? u.convertUUIDtoName(list.replace('-', '\0'))
-													: player.getName()) + "&7(" + list + ")"));
+								List<String> data = new ArrayList<String>();
+								accounts.forEach(uuid -> {
+									OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(uuid));
+									data.add(translateAlternateColorCodes('&',
+											"&c" + (player == null ? u.convertUUIDtoName(uuid.replace('-', '\0'))
+													: player.getName()) + "&7(" + uuid + ")"));
 								});
+								sender.sendMessage(Messages.checkHeader.replaceAll("%ip%", args[1]));
+								data.forEach(msg -> sender.sendMessage(msg));
 								Bukkit.getPluginManager()
 										.callEvent(new AltCheckEvent(sender, args[1], true, accounts));
 							}).start();
@@ -127,6 +129,7 @@ public final class AltCheckCommandExecutor implements CommandExecutor {
 							} else {
 								if (country == null) {
 									country = u.getCountry(ip).country_name;
+									AltCheck.CountryCache.put(players.getName(), country);
 								}
 								if (country.equals("") || country.isEmpty()) {
 									country = "Unknow";
